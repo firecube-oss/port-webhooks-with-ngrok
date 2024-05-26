@@ -8,10 +8,30 @@ A Proof of Concept on how to quickly bootstrap a [getport.io](https://app.getpor
 
 * [Platform Engineering Dies in 4 Weeks](https://thenewstack.io/platform-engineering-dies-in-4-weeks/)
 * [On platform adoption: essential mindsets and approaches](https://www.engineeringprimer.com/p/on-platform-adoption-essential-mindsets)
+* Good Practice Principles [Platform Strategy](https://leanpub.com/platformstrategy)
 
 ### The Core of the Problem 
 
 ![image](docs/images/why.png)
+
+### Summary
+
+* There are a lot of moving parts to making a prototype to work
+  * Domain Names
+  * SSL (Trusted)
+  * Runtimes
+  * Credentials 
+  * Code deployment (CI/CD)
+  * K8s and Kafka
+  * Dealing with Infrastructure as Code / CI/CD / Provisioning Scripts Specific Feedback -> Abstractions
+  * If none of the above worry you ... then this project is most likely not for you 
+
+* How does this project shorten "The Hump"
+  * Outsourcing the network plumbing to a [provider](https://ngrok.com)
+  * Providing fail-safe [pydantic]() models
+  * Setting up a web server with [FastAPI]()
+  * [Effectively simulating Infrastructure as Code / CI/CD / Provisioning Scripts]()
+  * Allowing you to get feedback from developers/users about how they could reason about what is happening with their request without domain knowledge (i.e. Why Terraform Fails) -> Abstractions
 
 ## High Level Architecture
 
