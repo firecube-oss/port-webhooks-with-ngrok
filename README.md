@@ -33,7 +33,15 @@ A Proof of Concept on how to quickly bootstrap a [getport.io](https://app.getpor
   * [Effectively simulating Infrastructure as Code / CI/CD / Provisioning Scripts]()
   * Allowing you to get feedback from developers/users about how they could reason about what is happening with their request without domain knowledge (i.e. Why Terraform Fails) -> Abstractions
 
-## DevEex Prototypes
+## DevEx Prototypes
+
+We can provide feedback in a variety of ways. 
+
+However it can be hard for the consumer of the Self Service Actions to understand it. 
+
+Rapid prototyping can help short circuit the process and provide context relevant feedback in an Abstracted way.
+
+This means the users our Platform are more likely to adopt it. 
 
 ### Background 
 
