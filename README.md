@@ -2,6 +2,17 @@
 
 A Proof of Concept on how to quickly bootstrap a [getport.io](https://app.getport.io/) Self Service Actions with [ngrok](https://ngrok.com/) and [FastAPI](https://fastapi.tiangolo.com/)
 
+## Why
+
+### Background
+
+* [Platform Engineering Dies in 4 Weeks](https://thenewstack.io/platform-engineering-dies-in-4-weeks/)
+* [On platform adoption: essential mindsets and approaches](https://www.engineeringprimer.com/p/on-platform-adoption-essential-mindsets)
+
+### The Core of the Problem 
+
+![image](docs/images/why.png)
+
 ## High Level Architecture
 
 ![image](docs/architecture/high-level.png)
