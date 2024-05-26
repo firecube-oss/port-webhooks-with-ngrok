@@ -33,6 +33,26 @@ A Proof of Concept on how to quickly bootstrap a [getport.io](https://app.getpor
   * [Effectively simulating Infrastructure as Code / CI/CD / Provisioning Scripts]()
   * Allowing you to get feedback from developers/users about how they could reason about what is happening with their request without domain knowledge (i.e. Why Terraform Fails) -> Abstractions
 
+## DevEex Prototypes
+
+### Background 
+
+[DevOps MUST Build Internal Developer Platform (IDP)](https://youtu.be/j5i00z3QXyU?list=PLyicRj904Z9_50dH2eD5prLZ8b9A-fdgt&t=731)
+
+[DevEx: What Actually Drives Productivity](https://queue.acm.org/detail.cfm?id=3595878)
+
+### Pictorially
+
+![image](docs/images/failz.png)
+
+### Why it maters
+
+* Prototyping with Devs / Consumers in early stages can shorten DevEx
+* How would they reason about what went wrong
+* What should we focus on 
+* This will vary from teams/ units organisations etc
+* Being able to rapidly prototype the right signals is important!
+
 ## High Level Architecture
 
 ![image](docs/architecture/high-level.png)
