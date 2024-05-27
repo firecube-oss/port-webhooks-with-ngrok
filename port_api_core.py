@@ -1,7 +1,7 @@
 import requests
 from loguru import logger
 
-#worst implemntation ever :(
+# worst implemntation ever :(
 
 PORT_API_BASE_URL = "https://api.getport.io/v1"
 PORT_API_TOKEN_URL = f"{PORT_API_BASE_URL}/auth/access_token"

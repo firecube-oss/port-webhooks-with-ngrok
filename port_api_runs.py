@@ -1,14 +1,12 @@
 from enum import Enum
 
 import requests
-from faker import Faker
 from loguru import logger
 from pydantic import AnyUrl, BaseModel
 
 from port_api_core import PORT_API_BASE_URL, PORT_API_HEADERS
 
 PORT_API_RUNS_URL = f"{PORT_API_BASE_URL}/actions/runs"
-port_api_faker_messages = Faker()
 
 
 # Base Model for all messages to include runID
