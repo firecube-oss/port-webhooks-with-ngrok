@@ -43,10 +43,11 @@ The article [Platform Engineering Dies in 4 Weeks](https://thenewstack.io/platfo
 
 ## Install and Run
 
-> :warning:  ngrok, Pydantic and FastAPI libraries used in this MVP are sensitive to versions. Use of Virutal Environments is highly recommended 
+> [!CAUTION]
+> ngrok, Pydantic and FastAPI libraries used in this MVP are sensitive to versions. Use of Virutal Environments is highly recommended 
 
-* Obtain Ngrok Auth Token and Edge ID and set in [main.py]()
-* Obtain a Port Client Secret and Client ID and set in [port_api_core.py]()
+* Obtain Ngrok Auth Token and Edge ID and set it in [main.py](https://github.com/firecube-oss/port-webhooks-with-ngrok/blob/main/main.py#L13-L14) or as an environment variable 
+* Obtain a Port Client Secret and Client ID and set in [main.py](https://github.com/firecube-oss/port-webhooks-with-ngrok/blob/main/main.py#L15-L16) or as an environment variable 
 
 ```bash
 pip install -r requirements.txt
@@ -70,13 +71,13 @@ A successful run should print the following in the terminal
 
 ## Todo 
 
-* [ ] Turn [port_api_core]() in to a proper class
-* [ ] [Webhook validation](https://docs.getport.io/create-self-service-experiences/setup-backend/webhook/signature-verification/) logic (core module) 
-* [ ] Demonstrate MVP of Retrieving Blueprint and Action Run via API (i.e. minimal webhook config and use APIs to retrieve Self Service Action Details)
-* [ ] Demonstrate [Tying Entities to an action run](https://docs.getport.io/create-self-service-experiences/reflect-action-progress/#tying-entities-to-an-action-run)
-* [ ] More realistic example -> Temporary IP Whitelisting
-* [ ] More realistic example -> Anonymized Prod database 
-* [ ] Use Pydantic Settings with a .env file at root
+* [x] Turn [port_api_core]() in to a proper class
+* [] [Webhook validation](https://docs.getport.io/create-self-service-experiences/setup-backend/webhook/signature-verification/) logic (core module) 
+* [] Demonstrate MVP of Retrieving Blueprint and Action Run via API (i.e. minimal webhook config and use APIs to retrieve Self Service Action Details)
+* [] Demonstrate [Tying Entities to an action run](https://docs.getport.io/create-self-service-experiences/reflect-action-progress/#tying-entities-to-an-action-run)
+* [] More realistic example -> Temporary IP Whitelisting
+* [] More realistic example -> Anonymized Prod database 
+* [] Use Pydantic Settings with a .env file at root
 
 ## Platform Engineering Inspiration
 
