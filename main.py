@@ -42,14 +42,14 @@ app = FastAPI(lifespan=lifespan)
 # endpoint to send webhooks that doesn't do anything with them
 @app.post("/manual")
 async def root(Run_id: Annotated[str | None, Header(convert_underscores=False)] = None):
-    logger.info(Run_id)
+    logger.info(f" Webhook invoked via /manual with RunID = {Run_id}")
     return {}
 
 
 # endpoint that will automatically send updates to Port
 @app.post("/")
 def root(Run_id: Annotated[str | None, Header(convert_underscores=False)] = None):
-    logger.info(Run_id)
+    logger.info(f" Webhook invoked via / with RunID = {Run_id}")
     simulate_a_run(Run_id)
     return {}
 
