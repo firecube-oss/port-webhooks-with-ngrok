@@ -3,6 +3,7 @@ from pydantic import BaseModel, HttpUrl
 from requests import delete, get, patch, post, put
 from requests.models import Response
 
+
 # https://api.getport.io/static/index.html#/Authentication%20%2F%20Authorization/post_v1_auth_access_token
 class PortAuthAccessTokenRequest(BaseModel):
     clientId: str
@@ -42,7 +43,9 @@ class PortClient:
             cls.API_HEADERS["Authorization"] = (
                 f"{token_response.tokenType} {token_response.accessToken}"
             )
-            logger.info(f"Obtained a Port Token valid for {round(token_response.expiresIn / 3600,2)} Hours")
+            logger.info(
+                f"Obtained a Port Token valid for {round(token_response.expiresIn / 3600,2)} Hours"
+            )
 
         # no response from auth API means subsequent calls won't work
         if raw_response.status_code > 200:

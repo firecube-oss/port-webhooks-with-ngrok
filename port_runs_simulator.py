@@ -5,31 +5,26 @@ from sys import argv
 
 from faker import Faker
 
+from port_api_action_runs import *
 from port_api_core import PortClient
-from port_api_runs import (PortActionActionLRunUpdateFinal,
-                           PortActionActionRunUpdate, PortActionRunFinalStatus,
-                           PortActionRunLogUpdate, PortActionsRun)
 
 faker = Faker()
 
-client = PortActionsRun()
-
-
-def simulate_a_run(runID: str):
-
+def simulate_a_run(run_id: str):
+    client = PortActionRunsClient(run_id = run_id)
     # simulate an INITIALIZING phase
     client.send_status_update(
-        PortActionActionRunUpdate(
-            runID=runID,
+        PortActionRunsUpdate(
+            run_id=run_id,
             statusLabel="INITIALIZING",
             summary=faker.paragraph(),
         )
     )
     for i in range(random.randint(1, 3)):
         client.send_log_update(
-            PortActionRunLogUpdate(
+            PortActionRunsLogUpdate(
                 message=f"INITIALIZING PHASE {i}:  {faker.paragraph()}",
-                runID=runID,
+                run_id=run_id,
             )
         )
 
@@ -38,8 +33,8 @@ def simulate_a_run(runID: str):
 
     # we have begun Infrastructure as Code / CI/CD / Provisioning Scripts
     client.send_status_update(
-        PortActionActionRunUpdate(
-            runID=runID,
+        PortActionRunsUpdate(
+            run_id=run_id,
             statusLabel="PROVISIONING with Provider",
             summary=faker.paragraph(),
             link=[faker.url(), faker.url()],
@@ -47,8 +42,8 @@ def simulate_a_run(runID: str):
     )
     for i in range(random.randint(1, 3)):
         client.send_log_update(
-            PortActionRunLogUpdate(
-                runID=runID,
+            PortActionRunsLogUpdate(
+                run_id=run_id,
                 message=f"PROVISIONING PHASE {i}:  {faker.paragraph()}",
             )
         )
@@ -59,24 +54,24 @@ def simulate_a_run(runID: str):
     # Simulate Updates Infrastructure as Code / CI/CD / Provisioning Scripts
     for i in range(random.randint(1, 5)):
         client.send_status_update(
-            PortActionActionRunUpdate(
-                runID=runID,
+            PortActionRunsUpdate(
+                run_id=run_id,
                 statusLabel=f"UPDATES from Provider Phase {i}",
                 summary=faker.paragraph(),
             )
         )
         client.send_log_update(
-            PortActionRunLogUpdate(
+            PortActionRunsLogUpdate(
                 message=f"UPDATES PHASE {i}:  {faker.paragraph()}",
-                runID=runID,
+                run_id=run_id,
             )
         )
         time.sleep(random.randint(5, 20))  # change this to your requirements
 
     client.send_final_update(
-        PortActionActionLRunUpdateFinal(
-            runID=runID,
-            status=PortActionRunFinalStatus.SUCCESS,
+        PortActionActionRunsUpdateFinal(
+            run_id=run_id,
+            status=PortActionRunsFinalStatus.SUCCESS,
             summary=faker.paragraph(),
         )
     )
