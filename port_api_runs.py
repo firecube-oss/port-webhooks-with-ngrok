@@ -5,11 +5,6 @@ from pydantic import AnyUrl, BaseModel
 
 from port_api_core import PortClient
 
-runs_client = PortClient(exclude_pydantic_fields="runID")
-
-API_RUNS_URL = f"{PortClient.API_BASE_URL}/actions/runs"
-API_HEADERS = PortClient.API_HEADERS
-
 
 # Base Model for all bodys to include runID
 class PortActionRunBase(BaseModel):
@@ -38,13 +33,20 @@ class PortActionRunLogUpdate(PortActionRunBase):
     message: str
 
 
-def send_log_update(body: PortActionRunLogUpdate) -> str:
-    runs_client.post(url=f"{API_RUNS_URL}/{body.runID}/logs", body=body)
+class PortActionsRun:
+    API_RUNS_URL = f"{PortClient.API_BASE_URL}/actions/runs"
+   
+    
+    def __init__(self) -> None:
+        self._client = PortClient(exclude_pydantic_fields="runID")
 
+    def send_log_update(self, body: PortActionRunLogUpdate) -> str:
+        self._client.post(
+            url=f"{self.__class__.API_RUNS_URL}/{body.runID}/logs", body=body
+        )
 
-def send_status_update(body: PortActionActionRunUpdate) -> str:
-    runs_client.patch(url=f"{API_RUNS_URL}/{body.runID}", body=body)
+    def send_status_update(self, body: PortActionActionRunUpdate) -> str:
+        self._client.patch(url=f"{self.__class__.API_RUNS_URL}/{body.runID}", body=body)
 
-
-def send_final_update(body: PortActionActionLRunUpdateFinal) -> str:
-    runs_client.patch(url=f"{API_RUNS_URL}/{body.runID}", body=body)
+    def send_final_update(self, body: PortActionActionLRunUpdateFinal) -> str:
+        self._client.patch(url=f"{self.__class__.API_RUNS_URL}/{body.runID}", body=body)
