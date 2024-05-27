@@ -4,9 +4,10 @@ import requests
 from loguru import logger
 from pydantic import AnyUrl, BaseModel
 
-from port_api_core import PORT_API_BASE_URL, PORT_API_HEADERS
+from port_api_core import PortClient
 
-PORT_API_RUNS_URL = f"{PORT_API_BASE_URL}/actions/runs"
+API_RUNS_URL = f"{PortClient.API_BASE_URL}/actions/runs"
+API_HEADERS = PortClient.API_HEADERS
 
 
 # Base Model for all messages to include runID
@@ -52,8 +53,8 @@ def log_port_api_response(raw_response: requests.models.Response):
 
 def send_log_update(message: PortActionRunLogUpdate) -> str:
     raw_response = requests.post(
-        url=f"{PORT_API_RUNS_URL}/{message.runID}/logs",
-        headers=PORT_API_HEADERS,
+        url=f"{API_RUNS_URL}/{message.runID}/logs",
+        headers=API_HEADERS,
         data=prepare_port_api_payload(message),
     )
     log_port_api_response(raw_response)
@@ -61,8 +62,8 @@ def send_log_update(message: PortActionRunLogUpdate) -> str:
 
 def send_status_update(message: PortActionActionRunUpdate) -> str:
     raw_response = requests.patch(
-        url=f"{PORT_API_RUNS_URL}/{message.runID}",
-        headers=PORT_API_HEADERS,
+        url=f"{API_RUNS_URL}/{message.runID}",
+        headers=API_HEADERS,
         data=prepare_port_api_payload(message),
     )
     log_port_api_response(raw_response)
@@ -70,8 +71,8 @@ def send_status_update(message: PortActionActionRunUpdate) -> str:
 
 def send_final_update(message: PortActionActionLRunUpdateFinal) -> str:
     raw_response = requests.patch(
-        url=f"{PORT_API_RUNS_URL}/{message.runID}",
-        headers=PORT_API_HEADERS,
+        url=f"{API_RUNS_URL}/{message.runID}",
+        headers=API_HEADERS,
         data=prepare_port_api_payload(message),
     )
     log_port_api_response(raw_response)
