@@ -1,5 +1,7 @@
 import random
 import time
+from sys import argv
+from os import getenv
 
 from faker import Faker
 
@@ -73,3 +75,9 @@ def simulate_a_run(runID: str):
             summary=faker.paragraph(),
         )
     )
+
+if __name__ == "__main__":
+    PORT_CLIENT_ID = getenv("PORT_CLIENT_ID", "")
+    PORT_CLIENT_SECRET = getenv("PORT_CLIENT_SECRET", "")
+    PortClient.authenticate(clientId=PORT_CLIENT_ID, clientSecret=PORT_CLIENT_SECRET)
+    simulate_a_run(argv[1])
