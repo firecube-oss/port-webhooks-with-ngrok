@@ -1,28 +1,54 @@
+from typing import Any
+
 import requests
 from loguru import logger
+from pydantic import BaseModel
 
-# worst implemntation ever :(
 
-PORT_API_BASE_URL = "https://api.getport.io/v1"
-PORT_API_TOKEN_URL = f"{PORT_API_BASE_URL}/auth/access_token"
+# https://api.getport.io/static/index.html#/Authentication%20%2F%20Authorization/post_v1_auth_access_token
+class PortAuthAccessTokenRequest(BaseModel):
+    clientId: str
+    clientSecret: str
 
-PORT_API_HEADERS = {}
 
-CLIENT_ID = ""
-CLIENT_SECRET = ""
-raw_response = requests.post(
-    f"{PORT_API_BASE_URL}/auth/access_token",
-    json={"clientId": CLIENT_ID, "clientSecret": CLIENT_SECRET},
-)
-# no response from auth API means subsequent calls won't work
-if raw_response.status_code > 300:
-    logger.error("API Returned a Non 200 Response")
-    exit(1)
+class PortAuthAccessTokenResponse(BaseModel):
+    ok: bool
+    accessToken: str
+    expiresIn: int
+    tokenType: str
 
-PORT_API_HEADERS = {
-    "Authorization": f"Bearer {raw_response.json().get('accessToken')}",
-    "Content-type": "application/json",
-}
-if PORT_API_HEADERS.get("Authorization") is None:
-    logger.error("Unable to add auth Token to Headers")
-    exit(1)
+
+class PortClient:
+    API_HEADERS = {
+        "Authorization": "",
+        "Content-type": "application/json",
+    }
+    API_BASE_URL = "https://api.getport.io/v1"
+    API_TOKEN_URL = f"{API_BASE_URL}/auth/access_token"
+
+    def __init__(self) -> None:
+        pass
+
+    @classmethod
+    def authenticate(cls, clientId: str, clientSecret: str):
+        auth_request = PortAuthAccessTokenRequest(
+            clientId=clientId, clientSecret=clientSecret
+        )
+
+        raw_response = requests.post(
+            cls.API_TOKEN_URL, json=auth_request.model_dump()
+        )
+
+        if raw_response.status_code == 200:
+            token_response = PortAuthAccessTokenResponse.model_validate(
+                raw_response.json()
+            )
+            cls.API_HEADERS["Authorization"] = (
+                f"{token_response.tokenType} {token_response.accessToken}"
+            )
+            logger.info(f"Obtained a Port Token valid for {token_response.expiresIn}")
+
+        # no response from auth API means subsequent calls won't work
+        if raw_response.status_code > 200:
+            logger.error("Port Authentication API Returned a Non 200 Response")
+            exit(1)

@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from os import getenv
 from typing import Annotated
 
 import ngrok
@@ -6,10 +7,13 @@ import uvicorn
 from fastapi import FastAPI, Header
 from loguru import logger
 
+from port_api_core import PortClient
 from port_runs_simulator import simulate_a_run
 
-NGROK_AUTH_TOKEN = ""
-NGROK_EDGE = "edge:edghts_"
+NGROK_AUTH_TOKEN = getenv("NGROK_AUTH_TOKEN", "")
+NGROK_EDGE = getenv("NGROK_EDGE", "edge:edghts_")
+PORT_CLIENT_ID = getenv("PORT_CLIENT_ID", "")
+PORT_CLIENT_SECRET = getenv("PORT_CLIENT_SECRET", "")
 
 APPLICATION_PORT = 5000
 
@@ -17,6 +21,7 @@ APPLICATION_PORT = 5000
 # ngrok free tier only allows one agent. So we tear down the tunnel on application termination
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    PortClient.authenticate(clientId=PORT_CLIENT_ID,clientSecret=PORT_CLIENT_SECRET)
     logger.info("Setting up Ngrok Tunnel")
     ngrok.set_auth_token(NGROK_AUTH_TOKEN)
     ngrok.forward(
@@ -33,6 +38,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+
 # endpoint to send webhooks that doesn't do anything with them
 @app.post("/manual")
 async def root(Run_id: Annotated[str | None, Header(convert_underscores=False)] = None):
@@ -46,6 +52,7 @@ def root(Run_id: Annotated[str | None, Header(convert_underscores=False)] = None
     logger.info(Run_id)
     simulate_a_run(Run_id)
     return {}
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=APPLICATION_PORT, reload=True)
