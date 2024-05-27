@@ -1,7 +1,11 @@
 import random
 import time
 
+from faker import Faker
+
 from port_api_runs import *
+
+port_api_faker_messages = Faker()
 
 
 def simulate_a_run(runID: str):
@@ -60,7 +64,7 @@ def simulate_a_run(runID: str):
                 runID=runID,
             )
         )
-        time.sleep(random.randint(5, 20)) # change this to your requirements
+        time.sleep(random.randint(5, 20))  # change this to your requirements
 
     send_final_update(
         PortActionActionLRunUpdateFinal(

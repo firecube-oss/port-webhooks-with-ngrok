@@ -3,7 +3,7 @@ from typing import Annotated
 
 import ngrok
 import uvicorn
-from fastapi import FastAPI, Header, Request
+from fastapi import FastAPI, Header
 from loguru import logger
 
 from port_runs_simulator import simulate_a_run
@@ -33,7 +33,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
 # endpoint to send webhooks that doesn't do anything with them
 @app.post("/manual")
 async def root(Run_id: Annotated[str | None, Header(convert_underscores=False)] = None):
@@ -47,7 +46,6 @@ def root(Run_id: Annotated[str | None, Header(convert_underscores=False)] = None
     logger.info(Run_id)
     simulate_a_run(Run_id)
     return {}
-
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=APPLICATION_PORT, reload=True)
