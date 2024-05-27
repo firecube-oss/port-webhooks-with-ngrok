@@ -57,7 +57,7 @@ class PortClient:
             logger.info("API Call Successful")
         else:
             logger.error(
-                f"Status Code: {raw_response.status_code} Message: {raw_response.text} Returned Content-Type: {raw_response.headers['Content-Type']}"
+                f"Status Code: {raw_response.status_code} \n Message: {raw_response.text} \n Returned Content-Type: {raw_response.headers['Content-Type']}"
             )
 
     def prepare_body(self, body) -> str:
@@ -71,7 +71,7 @@ class PortClient:
         )
         self.log_port_api_response(raw_response)
 
-    def get(self, url: HttpUrl):
+    def get(self, url: HttpUrl) -> dict:
         raw_response = get(url=url, headers=self.__class__.API_HEADERS)
         self.log_port_api_response(raw_response)
         if "application/json" in raw_response.headers["Content-Type"]:
