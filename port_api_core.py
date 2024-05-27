@@ -1,5 +1,3 @@
-from typing import Any
-
 import requests
 from loguru import logger
 from pydantic import BaseModel
