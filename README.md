@@ -4,62 +4,18 @@ A Proof of Concept on how to quickly bootstrap a [getport.io](https://app.getpor
 
 ## Why
 
-### Background
-
-* [Platform Engineering Dies in 4 Weeks](https://thenewstack.io/platform-engineering-dies-in-4-weeks/)
-* [On platform adoption: essential mindsets and approaches](https://www.engineeringprimer.com/p/on-platform-adoption-essential-mindsets)
-* Good Practice Principles [Platform Strategy](https://leanpub.com/platformstrategy)
-
-### The Core of the Problem 
-
 ![image](docs/images/why.png)
 
-### Summary
+The article [Platform Engineering Dies in 4 Weeks](https://thenewstack.io/platform-engineering-dies-in-4-weeks/) suggests that success of Platform Engineering is closely ties in to being able to demonstrate value quickly
 
-* There are a lot of moving parts to making a prototype to work
-  * Domain Names
-  * SSL (Trusted)
-  * Runtimes
-  * Credentials 
-  * Code deployment (CI/CD)
-  * K8s and Kafka
-  * Dealing with Infrastructure as Code / CI/CD / Provisioning Scripts Specific Feedback -> Abstractions
-  * If none of the above worry you ... then this project is most likely not for you 
+### What this project aims to do
 
-* How does this project shorten "The Hump"
-  * Outsourcing the network plumbing to a [provider](https://ngrok.com)
-  * Providing fail-safe [pydantic]() models
-  * Setting up a web server with [FastAPI]()
-  * [Effectively simulating Infrastructure as Code / CI/CD / Provisioning Scripts]()
-  * Allowing you to get feedback from developers/users about how they could reason about what is happening with their request without domain knowledge (i.e. Why Terraform Fails) -> Abstractions
-
-## DevEx Prototypes
-
-We can provide feedback in a variety of ways. 
-
-However it can be hard for the consumer of the Self Service Actions to understand it. 
-
-Rapid prototyping can help short circuit the process and provide context relevant feedback in an Abstracted way.
-
-This means the users our Platform are more likely to adopt it. 
-
-### Background 
-
-[DevOps MUST Build Internal Developer Platform (IDP)](https://youtu.be/j5i00z3QXyU?list=PLyicRj904Z9_50dH2eD5prLZ8b9A-fdgt&t=731)
-
-[DevEx: What Actually Drives Productivity](https://queue.acm.org/detail.cfm?id=3595878)
-
-### Pictorially
+* Setup a Port Webhook compatible testbed that can recieve Webhooks.  ([FastAPI](https://fastapi.tiangolo.com/),  [ngrok](https://ngrok.com/) )
+* Provide boiler plate Python Code to interact with Port [Authentication](https://github.com/firecube-oss/port-webhooks-with-ngrok/blob/main/port_api_core.py) and [Action Runs](https://github.com/firecube-oss/port-webhooks-with-ngrok/blob/main/port_api_runs.py) APIs (Pydantic Models)
+* Provide [simulation examples](https://github.com/firecube-oss/port-webhooks-with-ngrok/blob/main/port_runs_simulator.py) that can be used to start experimenting with Port without having to setup test Automation tooling (CI/CD, IaC, Scripts etc). 
+* Allow stakeholders to provide feedback on how they would reason about why a Self Service Action failed. 
 
 ![image](docs/images/failz.png)
-
-### Why it maters
-
-* Prototyping with Devs / Consumers in early stages can shorten DevEx
-* How would they reason about what went wrong
-* What should we focus on 
-* This will vary from teams/ units organisations etc
-* Being able to rapidly prototype the right signals is important!
 
 ## High Level Architecture
 
@@ -105,21 +61,6 @@ A successful run should print the following in the terminal
 
 * TODO
 
-## Goals 
-
-* Setup using minimal steps and code
-  * This includes network infrastructure
-  * Setup of a Port Self Service Action (i.e. no JQ with Body Params - just use the header (default))
-* Naive Simulator to demo how to work with a Port Self Service Action
-* Semi Realistic Simulated Scenarios (todo)
-* Minimal Pydantic modeling
-* Short lived experimentation - i don't refresh the JWT token or have logic to do this in this demo app. 
-
-## Non Goals
-
-* Full test suite
-* Full Pydantic models for Port APIs (might be another project?)
-
 ## Why no Issues? 
 
 * I have not enabled issues on this Github Repo
@@ -136,3 +77,10 @@ A successful run should print the following in the terminal
 * [ ] More realistic example -> Temporary IP Whitelisting
 * [ ] More realistic example -> Anonymized Prod database 
 * [ ] Use Pydantic Settings with a .env file at root
+
+## Platform Engineering Inspiration
+
+* [On platform adoption: essential mindsets and approaches](https://www.engineeringprimer.com/p/on-platform-adoption-essential-mindsets)
+* [Platform Strategy](https://leanpub.com/platformstrategy)
+* [DevOps MUST Build Internal Developer Platform (IDP)](https://youtu.be/j5i00z3QXyU?list=PLyicRj904Z9_50dH2eD5prLZ8b9A-fdgt&t=731)
+* [DevEx: What Actually Drives Productivity](https://queue.acm.org/detail.cfm?id=3595878)
