@@ -21,7 +21,7 @@ APPLICATION_PORT = 5000
 # ngrok free tier only allows one agent. So we tear down the tunnel on application termination
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    PortClient.authenticate(clientId=PORT_CLIENT_ID,clientSecret=PORT_CLIENT_SECRET)
+    PortClient.authenticate(clientId=PORT_CLIENT_ID, clientSecret=PORT_CLIENT_SECRET)
     logger.info("Setting up Ngrok Tunnel")
     ngrok.set_auth_token(NGROK_AUTH_TOKEN)
     ngrok.forward(

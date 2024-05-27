@@ -1,6 +1,8 @@
 import requests
 from loguru import logger
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
+from requests import delete, get, patch, post, put
+from requests.models import Response
 
 
 # https://api.getport.io/static/index.html#/Authentication%20%2F%20Authorization/post_v1_auth_access_token
@@ -22,20 +24,18 @@ class PortClient:
         "Content-type": "application/json",
     }
     API_BASE_URL = "https://api.getport.io/v1"
-    API_TOKEN_URL = f"{API_BASE_URL}/auth/access_token"
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, exclude_pydantic_fields: str) -> None:
+        self._exclude_pydantic_fields = exclude_pydantic_fields
 
     @classmethod
     def authenticate(cls, clientId: str, clientSecret: str):
+        API_TOKEN_URL = f"{cls.API_BASE_URL}/auth/access_token"
         auth_request = PortAuthAccessTokenRequest(
             clientId=clientId, clientSecret=clientSecret
         )
 
-        raw_response = requests.post(
-            cls.API_TOKEN_URL, json=auth_request.model_dump()
-        )
+        raw_response = post(API_TOKEN_URL, json=auth_request.model_dump())
 
         if raw_response.status_code == 200:
             token_response = PortAuthAccessTokenResponse.model_validate(
@@ -50,3 +50,44 @@ class PortClient:
         if raw_response.status_code > 200:
             logger.error("Port Authentication API Returned a Non 200 Response")
             exit(1)
+
+    def log_port_api_response(self, raw_response: Response):
+        if raw_response.status_code < 300:
+            logger.info("API Call Successful")
+        else:
+            logger.error(
+                f"Status Code: {raw_response.status_code} Message: {raw_response.text}"
+            )
+
+    def prepare_body(self, body) -> str:
+        return body.model_dump_json(
+            exclude_none=True, exclude=self._exclude_pydantic_fields
+        )
+
+    def post(self, body: str, url: HttpUrl):
+        raw_response = post(
+            url=url, data=self.prepare_body(body), headers=self.__class__.API_HEADERS
+        )
+        self.log_port_api_response(raw_response)
+
+    def get(self, url: HttpUrl):
+        raw_response = get(url=url, headers=self.__class__.API_HEADERS)
+        self.log_port_api_response(raw_response)
+
+    def patch(self, body: str, url: HttpUrl):
+        raw_response = patch(
+            url=url, data=self.prepare_body(body), headers=self.__class__.API_HEADERS
+        )
+        self.log_port_api_response(raw_response)
+
+    def delete(self, body: str, url: HttpUrl):
+        raw_response = delete(
+            url=url, data=self.prepare_body(body), headers=self.__class__.API_HEADERS
+        )
+        self.log_port_api_response(raw_response)
+
+    def put(self, body: str, url: HttpUrl):
+        raw_response = put(
+            url=url, data=self.prepare_body(body), headers=self.__class__.API_HEADERS
+        )
+        self.log_port_api_response(raw_response)

@@ -5,7 +5,7 @@ from faker import Faker
 
 from port_api_runs import *
 
-port_api_faker_messages = Faker()
+faker = Faker()
 
 
 def simulate_a_run(runID: str):
@@ -15,13 +15,13 @@ def simulate_a_run(runID: str):
         PortActionActionRunUpdate(
             runID=runID,
             statusLabel="INITIALIZING",
-            summary=port_api_faker_messages.paragraph(),
+            summary=faker.paragraph(),
         )
     )
     for i in range(random.randint(1, 3)):
         send_log_update(
             PortActionRunLogUpdate(
-                message=f"INITIALIZING PHASE {i}:  {port_api_faker_messages.paragraph()}",
+                message=f"INITIALIZING PHASE {i}:  {faker.paragraph()}",
                 runID=runID,
             )
         )
@@ -34,15 +34,15 @@ def simulate_a_run(runID: str):
         PortActionActionRunUpdate(
             runID=runID,
             statusLabel="PROVISIONING with Provider",
-            summary=port_api_faker_messages.paragraph(),
-            link=[port_api_faker_messages.url(), port_api_faker_messages.url()],
+            summary=faker.paragraph(),
+            link=[faker.url(), faker.url()],
         )
     )
     for i in range(random.randint(1, 3)):
         send_log_update(
             PortActionRunLogUpdate(
                 runID=runID,
-                message=f"PROVISIONING PHASE {i}:  {port_api_faker_messages.paragraph()}",
+                message=f"PROVISIONING PHASE {i}:  {faker.paragraph()}",
             )
         )
 
@@ -55,12 +55,12 @@ def simulate_a_run(runID: str):
             PortActionActionRunUpdate(
                 runID=runID,
                 statusLabel=f"UPDATES from Provider Phase {i}",
-                summary=port_api_faker_messages.paragraph(),
+                summary=faker.paragraph(),
             )
         )
         send_log_update(
             PortActionRunLogUpdate(
-                message=f"UPDATES PHASE {i}:  {port_api_faker_messages.paragraph()}",
+                message=f"UPDATES PHASE {i}:  {faker.paragraph()}",
                 runID=runID,
             )
         )
@@ -70,6 +70,6 @@ def simulate_a_run(runID: str):
         PortActionActionLRunUpdateFinal(
             runID=runID,
             status=PortActionRunFinalStatus.SUCCESS,
-            summary=port_api_faker_messages.paragraph(),
+            summary=faker.paragraph(),
         )
     )
