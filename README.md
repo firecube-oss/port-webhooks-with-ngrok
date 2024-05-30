@@ -15,7 +15,9 @@ The article [Platform Engineering Dies in 4 Weeks](https://thenewstack.io/platfo
 * Provide [simulation examples](https://github.com/firecube-oss/port-webhooks-with-ngrok/blob/main/port_runs_simulator.py) that can be used to start experimenting with Port without having to setup test Automation tooling (CI/CD, IaC, Scripts etc). 
 * Allow stakeholders to provide feedback on how they would reason about why a Self Service Action failed. 
 
-![image](docs/images/failz.png)
+### Demonstration of a Self Service Action Invocation
+
+![image](docs/images/example.png)
 
 ## High Level Architecture
 
