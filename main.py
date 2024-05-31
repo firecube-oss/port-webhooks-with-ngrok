@@ -4,7 +4,7 @@ from typing import Annotated
 
 import ngrok
 import uvicorn
-from fastapi import FastAPI, Header
+from fastapi import FastAPI, Request
 from loguru import logger
 
 from port_api_core import PortClient
@@ -38,19 +38,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
-# endpoint to send webhooks that doesn't do anything with them
+#endpoint to send webhooks that doesn't do anything with them
 @app.post("/manual")
-async def root(Run_id: Annotated[str | None, Header(convert_underscores=False)] = None):
-    logger.info(f" Webhook invoked via /manual with RunID = {Run_id}")
+async def root(request:Request):
+    logger.info(f" Webhook invoked via / with RunID = {request.headers.get('run_id')}")
     return {}
 
 
 # endpoint that will automatically send updates to Port
 @app.post("/")
-def root(Run_id: Annotated[str | None, Header(convert_underscores=False)] = None):
-    logger.info(f" Webhook invoked via / with RunID = {Run_id}")
-    simulate_a_run(Run_id)
+async def root(request:Request):
+    logger.info(f" Webhook invoked via / with RunID = {request.headers.get('run_id')}")
+    simulate_a_run(request.headers.get('run_id'))
     return {}
 
 
