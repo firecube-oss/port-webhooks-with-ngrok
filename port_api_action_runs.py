@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import AnyUrl, BaseModel
+from pydantic import AnyUrl, BaseModel, Field
 
 from port_api_core import PortClient
 
@@ -30,6 +30,11 @@ class PortActionActionRunsUpdateFinal(PortActionRunsUpdate):
 # https://api.getport.io/static/index.html#/Action%20Runs/get_v1_actions_runs__run_id__logs
 class PortActionRunsLogUpdate(PortActionRunsRequestBase):
     message: str
+
+
+class PortActionsWebookHeadersBase(BaseModel):
+    x_port_signature: str = Field(..., alias="x-port-signature")
+    x_port_timestamp: str = Field(..., alias="x-port-timestamp")
 
 
 class PortActionRunsClient:

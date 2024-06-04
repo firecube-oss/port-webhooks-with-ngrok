@@ -11,7 +11,8 @@ from port_api_action_runs import (PortActionActionRunsUpdateFinal,
                                   PortActionRunsClient,
                                   PortActionRunsFinalStatus,
                                   PortActionRunsLogUpdate,
-                                  PortActionRunsUpdate)
+                                  PortActionRunsUpdate,
+                                  PortActionsWebookHeadersBase)
 from port_api_core import PortClient
 
 
@@ -27,7 +28,7 @@ class NaiveSimulatorAction:
     pass
 
 
-class ExpectedHeaders(PortActionsWebookHeadersBase):
+class NaiveSimulatorExpectedHeaders(PortActionsWebookHeadersBase):
     run_id: str
 
 
@@ -41,7 +42,9 @@ router = APIRouter(
 # endpoint to send webhooks that doesn't do anything with them
 @router.post("/manual")
 async def naive_simulator_manual(request: Request):
-    parsed_header = ExpectedHeaders.model_validate(dict(request.headers.items()))
+    parsed_header = NaiveSimulatorExpectedHeaders.model_validate(
+        dict(request.headers.items())
+    )
     logger.info(f" Webhook invoked via / with RunID = {parsed_header.run_id}")
     return {}
 
@@ -49,7 +52,9 @@ async def naive_simulator_manual(request: Request):
 # endpoint that will automatically send updates to Port
 @router.post("/")
 async def naive_simulator_automatic(request: Request):
-    parsed_header = ExpectedHeaders.model_validate(dict(request.headers.items()))
+    parsed_header = NaiveSimulatorExpectedHeaders.model_validate(
+        dict(request.headers.items())
+    )
     logger.info(f" Webhook invoked via / with RunID = {parsed_header.run_id}")
     simulate_a_run(parsed_header.run_id)
     return {}
