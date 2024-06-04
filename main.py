@@ -8,6 +8,7 @@ from loguru import logger
 
 from port_api_core import PortClient
 from simulator_naive import router as naive_simulations_router
+from simulator_manual import router as manual_simulations_router
 
 NGROK_AUTH_TOKEN = getenv("NGROK_AUTH_TOKEN", "")
 NGROK_EDGE = getenv("NGROK_EDGE", "edge:edghts_")
@@ -37,6 +38,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(naive_simulations_router)
+app.include_router(manual_simulations_router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=APPLICATION_PORT, reload=True)
