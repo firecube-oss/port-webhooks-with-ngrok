@@ -1,14 +1,13 @@
 from contextlib import asynccontextmanager
 from os import getenv
-from typing import Annotated
 
 import ngrok
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from loguru import logger
 
 from port_api_core import PortClient
-from port_runs_simulator import simulate_a_run
+from simulator_naive import router as naive_simulations_router
 
 NGROK_AUTH_TOKEN = getenv("NGROK_AUTH_TOKEN", "")
 NGROK_EDGE = getenv("NGROK_EDGE", "edge:edghts_")
@@ -37,21 +36,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
-#endpoint to send webhooks that doesn't do anything with them
-@app.post("/manual")
-async def root(request:Request):
-    logger.info(f" Webhook invoked via / with RunID = {request.headers.get('run_id')}")
-    return {}
-
-
-# endpoint that will automatically send updates to Port
-@app.post("/")
-async def root(request:Request):
-    logger.info(f" Webhook invoked via / with RunID = {request.headers.get('run_id')}")
-    simulate_a_run(request.headers.get('run_id'))
-    return {}
-
+app.include_router(naive_simulations_router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=APPLICATION_PORT, reload=True)

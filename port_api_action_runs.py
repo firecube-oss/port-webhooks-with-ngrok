@@ -1,6 +1,5 @@
 from enum import Enum
 
-from loguru import logger
 from pydantic import AnyUrl, BaseModel
 
 from port_api_core import PortClient

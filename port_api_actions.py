@@ -1,4 +1,4 @@
-from pydantic import  BaseModel
+from pydantic import BaseModel
 
 from port_api_core import PortClient
 
@@ -6,6 +6,7 @@ from port_api_core import PortClient
 # base model for for requests going to Actions API
 class PortActionsRequestBase(BaseModel):
     pass
+
 
 class PortActionsClient:
     def __init__(self, action_identifier) -> None:
