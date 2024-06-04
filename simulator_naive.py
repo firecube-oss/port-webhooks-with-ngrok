@@ -4,14 +4,64 @@ from os import getenv
 from sys import argv
 
 from faker import Faker
+from fastapi import APIRouter, Request
+from loguru import logger
 
-from port_api_action_runs import *
+from port_api_action_runs import (PortActionActionRunsUpdateFinal,
+                                  PortActionRunsClient,
+                                  PortActionRunsFinalStatus,
+                                  PortActionRunsLogUpdate,
+                                  PortActionRunsUpdate,
+                                  PortActionsWebookHeadersBase)
 from port_api_core import PortClient
 
+
+class NaiveSimulatorBlueprint:
+    pass
+
+
+class NaiveSimulatorEntity:
+    pass
+
+
+class NaiveSimulatorAction:
+    pass
+
+
+class NaiveSimulatorExpectedHeaders(PortActionsWebookHeadersBase):
+    run_id: str
+
+
 faker = Faker()
+router = APIRouter(
+    prefix="",
+    tags=["naive"],
+)
+
+
+# endpoint to send webhooks that doesn't do anything with them
+@router.post("/manual")
+async def naive_simulator_manual(request: Request):
+    parsed_header = NaiveSimulatorExpectedHeaders.model_validate(
+        dict(request.headers.items())
+    )
+    logger.info(f" Webhook invoked via / with RunID = {parsed_header.run_id}")
+    return {}
+
+
+# endpoint that will automatically send updates to Port
+@router.post("/")
+async def naive_simulator_automatic(request: Request):
+    parsed_header = NaiveSimulatorExpectedHeaders.model_validate(
+        dict(request.headers.items())
+    )
+    logger.info(f" Webhook invoked via / with RunID = {parsed_header.run_id}")
+    simulate_a_run(parsed_header.run_id)
+    return {}
+
 
 def simulate_a_run(run_id: str):
-    client = PortActionRunsClient(run_id = run_id)
+    client = PortActionRunsClient(run_id=run_id)
     # simulate an INITIALIZING phase
     client.send_status_update(
         PortActionRunsUpdate(
@@ -28,7 +78,7 @@ def simulate_a_run(run_id: str):
             )
         )
 
-    # wait a little to simulate making calls to APIs etc
+        # wait a little to simulate making calls to APIs etc
     time.sleep(5)
 
     # we have begun Infrastructure as Code / CI/CD / Provisioning Scripts
@@ -81,4 +131,11 @@ if __name__ == "__main__":
     PORT_CLIENT_ID = getenv("PORT_CLIENT_ID", "")
     PORT_CLIENT_SECRET = getenv("PORT_CLIENT_SECRET", "")
     PortClient.authenticate(clientId=PORT_CLIENT_ID, clientSecret=PORT_CLIENT_SECRET)
-    simulate_a_run(argv[1])
+    client = PortActionRunsClient(run_id=argv[1])
+    client.send_final_update(
+        PortActionActionRunsUpdateFinal(
+            run_id=argv[1],
+            status=PortActionRunsFinalStatus.SUCCESS,
+            summary=faker.paragraph(),
+        )
+    )
