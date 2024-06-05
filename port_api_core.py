@@ -1,20 +1,35 @@
+from time import time
+
 from loguru import logger
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, Field, HttpUrl, PrivateAttr
 from requests import delete, get, patch, post, put
 from requests.models import Response
 
 
+def get_time(seconds_precision: bool = True) -> float:
+    return time() if not seconds_precision else int(time())
+
+
 # https://api.getport.io/static/index.html#/Authentication%20%2F%20Authorization/post_v1_auth_access_token
 class PortAuthAccessTokenRequest(BaseModel):
-    clientId: str
-    clientSecret: str
+    client_id: str = Field(serialization_alias="clientId")
+    client_secret: str = Field(serialization_alias="clientSecret")
 
 
 class PortAuthAccessTokenResponse(BaseModel):
     ok: bool
-    accessToken: str
-    expiresIn: int
-    tokenType: str
+    access_token: str = Field(validation_alias="accessToken")
+    expires_in: int = Field(validation_alias="expiresIn")
+    token_type: str = Field(validation_alias="tokenType")
+    _retrieved_time: int = PrivateAttr(default_factory=lambda: int(get_time()))
+
+    @property
+    def expired(self) -> bool:
+        return self._retrieved_time + self.expires_in < get_time()
+
+    @property
+    def full_token(self) -> str:
+        return f"{self.token_type} {self.access_token}"
 
 
 class PortClient:
@@ -28,23 +43,16 @@ class PortClient:
         self._exclude_pydantic_fields = exclude_pydantic_fields
 
     @classmethod
-    def authenticate(cls, clientId: str, clientSecret: str):
+    def authenticate(cls, auth_request: PortAuthAccessTokenRequest):
         API_TOKEN_URL = f"{cls.API_BASE_URL}/auth/access_token"
-        auth_request = PortAuthAccessTokenRequest(
-            clientId=clientId, clientSecret=clientSecret
-        )
-
-        raw_response = post(API_TOKEN_URL, json=auth_request.model_dump())
-
+        raw_response = post(API_TOKEN_URL, json=auth_request.model_dump(by_alias=True))
         if raw_response.status_code == 200:
             token_response = PortAuthAccessTokenResponse.model_validate(
                 raw_response.json()
             )
-            cls.API_HEADERS["Authorization"] = (
-                f"{token_response.tokenType} {token_response.accessToken}"
-            )
+            cls.API_HEADERS["Authorization"] = token_response.full_token
             logger.info(
-                f"Obtained a Port Token valid for {round(token_response.expiresIn / 3600,2)} Hours"
+                f"Obtained a Port Token valid for {round(token_response.expires_in / 3600,2)} Hours"
             )
 
         # no response from auth API means subsequent calls won't work

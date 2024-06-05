@@ -6,9 +6,9 @@ import uvicorn
 from fastapi import FastAPI
 from loguru import logger
 
-from port_api_core import PortClient
-from simulator_naive import router as naive_simulations_router
+from port_api_core import PortAuthAccessTokenRequest, PortClient
 from simulator_manual import router as manual_simulations_router
+from simulator_naive import router as naive_simulations_router
 
 NGROK_AUTH_TOKEN = getenv("NGROK_AUTH_TOKEN", "")
 NGROK_EDGE = getenv("NGROK_EDGE", "edge:edghts_")
@@ -21,7 +21,11 @@ APPLICATION_PORT = 5000
 # ngrok free tier only allows one agent. So we tear down the tunnel on application termination
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    PortClient.authenticate(clientId=PORT_CLIENT_ID, clientSecret=PORT_CLIENT_SECRET)
+    PortClient.authenticate(
+        PortAuthAccessTokenRequest(
+            client_id=PORT_CLIENT_ID, client_secret=PORT_CLIENT_SECRET
+        )
+    )
     logger.info("Setting up Ngrok Tunnel")
     ngrok.set_auth_token(NGROK_AUTH_TOKEN)
     ngrok.forward(
